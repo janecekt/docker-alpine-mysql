@@ -9,6 +9,12 @@ random_password() {
 	dd if=/dev/urandom bs=1 count=32 2>/dev/null | sha256sum | head -c 32
 }
 
+finish() {
+   echo ">>> Terminating MYSQLD with pid $PID"
+   kill $PID
+}
+trap finish 1 2 3 6 15
+
 if [ ! -d ${DATA_DIR} ]; then
 	echo ">>> Directory ${DATA_DIR} does not exist .... creating DB"
 	mkdir ${DATA_DIR}
@@ -75,11 +81,12 @@ if [ -z "${PORT}" ]; then
 fi
 
 echo ">>>> Starting DB"
-exec /usr/bin/mysqld \
+/usr/bin/mysqld \
 	--user nobody \
 	--datadir=${DATA_DIR} \
 	--socket=${SOCKET} \
 	--port ${PORT} \
 	--log-warnings=1 \
-	--log-error=/dev/stderr
-	
+	--log-error=/dev/stderr &
+PID=$!
+wait $PID
