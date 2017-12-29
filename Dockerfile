@@ -2,8 +2,8 @@ FROM alpine:3.6
 MAINTAINER Tomas Janecek
 
 RUN apk add --no-cache \
-      mysql=10.1.22-r1 \
-      mysql-client=10.1.22-r1 \
+      mysql=10.1.26-r0 \
+      mysql-client=10.1.26-r0 \
    && rm -rf /var/lib/mysql \
    && ln -s /app/data/mysql /var/lib/mysql
 
